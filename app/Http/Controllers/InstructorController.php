@@ -19,7 +19,7 @@ class InstructorController extends Controller
         $validated = $request->validate([
             'full_name' => 'required|string|max:255',
             'instructor_id' => 'required|string|max:20|unique:instructors',
-            'course' => 'required|string|max:255',
+            'department' => 'required|string|max:255',
             'email' => 'required|email|unique:instructors',
             'phone' => 'required|string|max:15|unique:instructors',
             'photo' => 'nullable|string', // expect base64 string
@@ -45,7 +45,7 @@ class InstructorController extends Controller
         $validated = $request->validate([
             'full_name' => 'sometimes|string|max:255',
             'instructor_id' => 'sometimes|string|max:20|unique:instructors,instructor_id,' . $instructor->id,
-            'course' => 'sometimes|string|max:255',
+            'department' => 'sometimes|string|max:255',
             'email' => 'sometimes|email|unique:instructors,email,' . $instructor->id,
             'phone' => 'sometimes|string|max:15|unique:instructors,phone,' . $instructor->id,
             'photo' => 'nullable|string',
