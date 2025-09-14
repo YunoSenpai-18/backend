@@ -15,6 +15,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
+    Route::get('/checker/schedules', [ScheduleController::class, 'checkerSchedules']);
     Route::apiResource('instructors', InstructorController::class);
     Route::apiResource('schedules', ScheduleController::class);
     Route::apiResource('users', UserController::class)->only(['index', 'show']);

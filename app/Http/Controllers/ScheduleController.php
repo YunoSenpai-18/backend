@@ -70,4 +70,17 @@ class ScheduleController extends Controller
 
         return response()->json(['message' => 'Schedule deleted']);
     }
+
+    public function checkerSchedules(Request $request)
+    {
+        $user = $request->user(); // logged-in checker
+        $today = now()->format('l'); // e.g., "Monday"
+
+        $schedules = Schedule::with(['instructor', 'checker'])
+            ->where('assigned_checker_id', $user->id)
+            ->where('day', $today)
+            ->get();
+
+        return response()->json($schedules);
+    }
 }
