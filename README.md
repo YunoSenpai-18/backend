@@ -1,61 +1,87 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Laravel Setup Instructions
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This guide will walk you through setting up a local development environment for a Laravel project.
 
-## About Laravel
+## Prerequisites
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Before you begin, ensure you have the following installed:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 1. **Download Laravel Herd**
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Download [Laravel Herd](https://herd.laravel.com/windows)
 
-## Learning Laravel
+### 2. **Install DBngin**
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Download and install [DBngin](https://dbngin.com/), a MySQL management tool for local development.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 3. **Install TablePlus**
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Download and install [TablePlus](https://tableplus.com/download/), a MySQL database management tool.
 
-## Laravel Sponsors
+### 4. **Install Composer**
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- Download and install [Composer](https://getcomposer.org/) for managing PHP dependencies.
 
-### Premium Partners
+## Installation and Setup
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+1. **Clone or Download the Repository**: 
+    - Clone the repository using:
+    ```bash
+    git clone https://github.com/YunoSenpai-18/backend.git
+    cd your-laravel-app
+    ```
+    - Alternatively, you can download the ZIP and unzip it in your desired directory.
 
-## Contributing
+2. **Install Project Dependencies**: Run the following command to install the necessary PHP dependencies using Composer:
+    ```bash
+    composer install
+    ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+3. **Copy the `.env` file**: Copy the `.env.example` file to `.env`:
+    ```bash
+    cp .env.example .env
+    ```
 
-## Code of Conduct
+4. **Edit the `.env` File**: Open the `.env` file and change the `SESSION_DRIVER` configuration:
+    ```plaintext
+    SESSION_DRIVER=file
+    ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+5. **Generate Application Key**: Generate the application key:
+    ```bash
+    php artisan key:generate
+    ```
 
-## Security Vulnerabilities
+6. **Run Database Migrations**: Set up the database by running the migrations:
+    ```bash
+    php artisan migrate
+    ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+7. **Seed the Database**: Seed the database with the UserSeeder:
+    ```bash
+    php artisan db:seed --class=UserSeeder
+    ```
 
-## License
+8. **Start MySQL Database**: Open DBngin and click the Plus (+) button to create a MySQL instance. Choose MySQL as the database, then click **Create**.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+9. **Configure TablePlus**: Open TablePlus and configure your local MySQL connection:
+    - **Name**: localhost
+    - **Host/IP**: 127.0.0.1
+    - **Port**: 3306
+    - **User**: root
+    - **Password**: (leave blank or as per your setup)
+    Click **Save** to establish the connection.
+
+10. **Configure Laravel Herd**: Open Laravel Herd and make sure all services are running (green status). Under **General**, add the path to folder with the project inside.
+
+11. **Expose your Local Server**: 
+    - Create an **Expose** account and obtain your Expose token from [Expose](https://expose.dev/).
+    - Use the following command to share your local Laravel app over the internet:
+    ```bash
+    expose share http://backend-main.test
+    ```
+    - Copy the **public URL** provided by Expose.
+
+12. **Test Accessibility**: Make sure the URL is accessible in a web browser. It should look something like this: `https://your-expose-url.expose.dev`.
+
+13. **Connect with React Native**: Open your React Native app and paste the **Expose public URL** into the backend configuration or API URL setting to establish a connection between the frontend and backend for testing.
