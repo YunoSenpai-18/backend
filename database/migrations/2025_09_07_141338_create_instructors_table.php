@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('department');
             $table->string('email')->unique();
             $table->string('phone', 15)->unique();
-            $table->longText('photo')->nullable(); // store as Base64 or blob (depends on how you send it from React Native)
+            $table->string('photo')->nullable(); // Reference photo
             $table->timestamps();
         });
     }
