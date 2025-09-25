@@ -17,8 +17,11 @@ return new class extends Migration
             $table->string('subject_code', 50);
             $table->string('subject', 255);
             $table->string('block', 50);
-            $table->string('time', 50);   // can change later to time/datetime
-            $table->string('day', 50);    // e.g. "Monday"
+
+            $table->time('start_time');
+            $table->time('end_time');
+
+            $table->string('day', 50);    // e.g. Monday
             $table->string('room', 5);
 
             // Foreign key: Instructor
@@ -30,6 +33,18 @@ return new class extends Migration
             $table->foreign('assigned_checker_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->timestamps();
+
+            // Prevent exact duplicates
+            $table->unique([
+                'subject_code',
+                'block',
+                'day',
+                'start_time',
+                'end_time',
+                'room',
+                'instructor_id',
+                'assigned_checker_id'
+            ], 'unique_schedule');
         });
     }
 
