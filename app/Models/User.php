@@ -33,4 +33,15 @@ class User extends Authenticatable
             'role' => 'string',
         ];
     }
+
+    protected $appends = ['photo_url'];
+
+    public function getPhotoUrlAttribute()
+    {
+        if (! $this->photo) {
+            return null;
+        }
+
+        return asset('storage/' . $this->photo);
+    }
 }
