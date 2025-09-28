@@ -18,10 +18,6 @@ Before you begin, ensure you have the following installed:
 
 - Download and install [TablePlus](https://tableplus.com/download/), a MySQL database management tool.
 
-### 4. **Install Composer**
-
-- Download and install [Composer](https://getcomposer.org/) for managing PHP dependencies.
-
 ## Installation and Setup
 
 1. **Clone or Download the Repository**: 
@@ -60,6 +56,11 @@ Before you begin, ensure you have the following installed:
 7. **Seed the Database**: Seed the database with the UserSeeder:
     ```bash
     php artisan db:seed --class=UserSeeder
+    ```
+
+8. **Create Storage Symbolic Link**: Create a symbolic link from `public/storage` to `storage/app/public` for photos:
+    ```bash
+    php artisan storage:link
     ```
 
 8. **Start MySQL Database**: Open DBngin and click the Plus (+) button to create a MySQL instance. Choose MySQL as the database, then click **Create**.
