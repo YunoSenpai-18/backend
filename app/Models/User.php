@@ -44,4 +44,9 @@ class User extends Authenticatable
 
         return asset('storage/' . $this->photo);
     }
+
+    public function feedback()
+    {
+        return $this->hasMany(Feedback::class, 'checker_id');
+    }
 }
