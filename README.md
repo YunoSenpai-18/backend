@@ -38,9 +38,13 @@ Before you begin, ensure you have the following installed:
     cp .env.example .env
     ```
 
-4. **Edit the `.env` File**: Open the `.env` file and change the `SESSION_DRIVER` configuration:
+4. **Edit the `.env` File**: Open the `.env` file and change the `SESSION_DRIVER` and `APP_URL` (if using localtunnel) configuration:
     ```plaintext
     SESSION_DRIVER=file
+    ```
+
+    ```plaintext
+    APP_URL=http://127.0.0.1
     ```
 
 5. **Generate Application Key**: Generate the application key:
@@ -75,7 +79,7 @@ Before you begin, ensure you have the following installed:
 
 10. **Configure Laravel Herd**: Open Laravel Herd and make sure all services are running (green status). Under **General**, add the path to folder with the project inside.
 
-11. **Expose your Local Server**: 
+11. **Expose your Local Server**: Open Laravel Herd and access the Expose option.
     - Create an **Expose** account and obtain your Expose token from [Expose](https://expose.dev/).
     - Use the following command to share your local Laravel app over the internet:
     ```bash
@@ -86,3 +90,22 @@ Before you begin, ensure you have the following installed:
 12. **Test Accessibility**: Make sure the URL is accessible in a web browser. It should look something like this: `https://your-expose-url.expose.dev`.
 
 13. **Connect with React Native**: Open your React Native app and paste the **Expose public URL** into the backend configuration or API URL setting to establish a connection between the frontend and backend for testing.
+
+14. **Alternative to Expose Share (If Expose Share Didn't Work)**: 
+    If the `expose share` command didn’t work for you, you can use **localtunnel** as an alternative to expose your local server:
+    - Install **localtunnel** globally:
+    ```bash
+    npm install -g localtunnel
+    ```
+
+    - Start your Laravel development server in one CMD window:
+    ```bash
+    php -S 127.0.0.1:8000 -t public
+    ```
+
+    - Expose the server with **localtunnel** in the second CMD window: 
+    ```bash
+    lt --port 8000 --subdomain testingapi
+    ```
+
+    - Copy the **public URL** provided by localtunnel and use it in your React Native configuration to connect the frontend to the backend.
