@@ -22,15 +22,14 @@ return new class extends Migration
             $table->time('end_time');
 
             $table->string('day', 50);    // e.g. Monday
-            $table->string('room', 5);
 
             // Foreign key: Instructor
             $table->unsignedBigInteger('instructor_id');
             $table->foreign('instructor_id')->references('id')->on('instructors')->onDelete('cascade');
 
             // Foreign key: Assigned Checker (User)
-            $table->unsignedBigInteger('assigned_checker_id');
-            $table->foreign('assigned_checker_id')->references('id')->on('users')->onDelete('cascade');
+            $table->unsignedBigInteger('room_id');
+            $table->foreign('room_id')->references('id')->on('rooms')->onDelete('cascade');
 
             $table->timestamps();
 
@@ -41,9 +40,8 @@ return new class extends Migration
                 'day',
                 'start_time',
                 'end_time',
-                'room',
-                'instructor_id',
-                'assigned_checker_id'
+                'room_id',
+                'instructor_id'
             ], 'unique_schedule');
         });
     }

@@ -16,19 +16,31 @@ class Schedule extends Model
         'start_time',
         'end_time',
         'day',
-        'room',
+        'room_id',
         'instructor_id',
-        'assigned_checker_id',
     ];
 
-    // Relationships
+    public function room()
+    {
+        return $this->belongsTo(Room::class);
+    }
+
+    // keep instructor
     public function instructor()
     {
         return $this->belongsTo(Instructor::class);
     }
 
+    // checker now comes through room
     public function checker()
     {
-        return $this->belongsTo(User::class, 'assigned_checker_id');
+        return $this->hasOneThrough(
+            User::class,
+            Room::class,
+            'id',          // FK on rooms
+            'id',          // FK on users
+            'room_id',     // Local key on schedules
+            'checker_id'   // Local key on rooms
+        );
     }
 }

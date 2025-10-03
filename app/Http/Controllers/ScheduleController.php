@@ -12,7 +12,7 @@ class ScheduleController extends Controller
     public function index()
     {
         return response()->json(
-            Schedule::with(['instructor', 'checker'])->get()
+            Schedule::with(['instructor', 'room.building', 'room.checker'])->get()
         );
     }
 
@@ -25,15 +25,14 @@ class ScheduleController extends Controller
         ]);
 
         $validated = $request->validate([
-            'subject_code' => 'required|string|max:50',
-            'subject' => 'required|string|max:255',
-            'block' => 'required|string|max:50',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i|after:start_time',
-            'day' => 'required|string|max:50',
-            'room' => 'required|string|max:5',
-            'instructor_id' => 'required|exists:instructors,id',
-            'assigned_checker_id' => 'required|exists:users,id',
+            'subject_code'   => 'required|string|max:50',
+            'subject'        => 'required|string|max:255',
+            'block'          => 'required|string|max:50',
+            'start_time'     => 'required|date_format:H:i',
+            'end_time'       => 'required|date_format:H:i|after:start_time',
+            'day'            => 'required|string|max:50',
+            'room_id'        => 'required|exists:rooms,id',
+            'instructor_id'  => 'required|exists:instructors,id',
         ]);
 
         // ✅ Check for exact duplicate first
@@ -42,9 +41,8 @@ class ScheduleController extends Controller
             ->where('day', $validated['day'])
             ->where('start_time', $validated['start_time'])
             ->where('end_time', $validated['end_time'])
-            ->where('room', $validated['room'])
+            ->where('room_id', $validated['room_id'])
             ->where('instructor_id', $validated['instructor_id'])
-            ->where('assigned_checker_id', $validated['assigned_checker_id'])
             ->first();
 
         if ($duplicate) {
@@ -60,12 +58,12 @@ class ScheduleController extends Controller
                     ->orWhereBetween('end_time', [$validated['start_time'], $validated['end_time']])
                     ->orWhere(function ($query) use ($validated) {
                         $query->where('start_time', '<=', $validated['start_time'])
-                                ->where('end_time', '>=', $validated['end_time']);
+                              ->where('end_time', '>=', $validated['end_time']);
                     });
             })
             ->where(function ($query) use ($validated) {
-                $query->where('room', $validated['room'])
-                    ->orWhere('instructor_id', $validated['instructor_id']);
+                $query->where('room_id', $validated['room_id'])
+                      ->orWhere('instructor_id', $validated['instructor_id']);
             })
             ->first();
 
@@ -78,13 +76,13 @@ class ScheduleController extends Controller
         // ✅ Save schedule if no conflict
         $schedule = Schedule::create($validated);
 
-        return response()->json($schedule->load(['instructor', 'checker']), 201);
+        return response()->json($schedule->load(['instructor', 'room.building', 'room.checker']), 201);
     }
 
     // Show single schedule
     public function show($id)
     {
-        $schedule = Schedule::with(['instructor', 'checker'])->findOrFail($id);
+        $schedule = Schedule::with(['instructor', 'room.building', 'room.checker'])->findOrFail($id);
         return response()->json($schedule);
     }
 
@@ -94,15 +92,14 @@ class ScheduleController extends Controller
         $schedule = Schedule::findOrFail($id);
 
         $validated = $request->validate([
-            'subject_code' => 'sometimes|string|max:50',
-            'subject' => 'sometimes|string|max:255',
-            'block' => 'sometimes|string|max:50',
-            'start_time' => 'sometimes|date_format:H:i',
-            'end_time' => 'sometimes|date_format:H:i|after:start_time',
-            'day' => 'sometimes|string|max:50',
-            'room' => 'sometimes|string|max:5',
-            'instructor_id' => 'sometimes|exists:instructors,id',
-            'assigned_checker_id' => 'sometimes|exists:users,id',
+            'subject_code'   => 'sometimes|string|max:50',
+            'subject'        => 'sometimes|string|max:255',
+            'block'          => 'sometimes|string|max:50',
+            'start_time'     => 'sometimes|date_format:H:i',
+            'end_time'       => 'sometimes|date_format:H:i|after:start_time',
+            'day'            => 'sometimes|string|max:50',
+            'room_id'        => 'sometimes|exists:rooms,id',
+            'instructor_id'  => 'sometimes|exists:instructors,id',
         ]);
 
         // Merge existing values with new ones (for proper conflict checking)
@@ -115,9 +112,8 @@ class ScheduleController extends Controller
             ->where('day', $data['day'])
             ->where('start_time', $data['start_time'])
             ->where('end_time', $data['end_time'])
-            ->where('room', $data['room'])
+            ->where('room_id', $data['room_id'])
             ->where('instructor_id', $data['instructor_id'])
-            ->where('assigned_checker_id', $data['assigned_checker_id'])
             ->first();
 
         if ($duplicate) {
@@ -134,12 +130,12 @@ class ScheduleController extends Controller
                     ->orWhereBetween('end_time', [$data['start_time'], $data['end_time']])
                     ->orWhere(function ($query) use ($data) {
                         $query->where('start_time', '<=', $data['start_time'])
-                                ->where('end_time', '>=', $data['end_time']);
+                              ->where('end_time', '>=', $data['end_time']);
                     });
             })
             ->where(function ($query) use ($data) {
-                $query->where('room', $data['room'])
-                    ->orWhere('instructor_id', $data['instructor_id']);
+                $query->where('room_id', $data['room_id'])
+                      ->orWhere('instructor_id', $data['instructor_id']);
             })
             ->first();
 
@@ -152,7 +148,7 @@ class ScheduleController extends Controller
         // ✅ Update schedule if no conflict
         $schedule->update($validated);
 
-        return response()->json($schedule);
+        return response()->json($schedule->load(['instructor', 'room.building', 'room.checker']));
     }
 
     // Delete schedule
@@ -169,8 +165,10 @@ class ScheduleController extends Controller
         $user = $request->user(); // logged-in checker
         $today = now()->format('l'); // e.g., "Monday"
 
-        $schedules = Schedule::with(['instructor', 'checker'])
-            ->where('assigned_checker_id', $user->id)
+        $schedules = Schedule::with(['instructor', 'room.building', 'room.checker'])
+            ->whereHas('room', function ($q) use ($user) {
+                $q->where('checker_id', $user->id);
+            })
             ->where('day', $today)
             ->get();
 

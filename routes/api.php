@@ -7,6 +7,8 @@ use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\BuildingController;
+use App\Http\Controllers\RoomController;
 
 // Login route (no middleware, anyone can hit this)
 Route::post('/login', [AuthController::class, 'login']);
@@ -23,6 +25,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('instructors', InstructorController::class);
     Route::apiResource('schedules', ScheduleController::class);
     Route::apiResource('users', UserController::class)->only(['store', 'update', 'destroy']);
+    Route::apiResource('buildings', BuildingController::class);
+    Route::apiResource('rooms', RoomController::class);
 
     // Feedback routes
     Route::apiResource('feedback', FeedbackController::class);
