@@ -57,9 +57,17 @@ Before you begin, ensure you have the following installed:
     php artisan migrate
     ```
 
-7. **Seed the Database**: Seed the database with the UserSeeder:
+7. **Seed the Database**: Seed the database:
     ```bash
     php artisan db:seed --class=UserSeeder
+    ```
+
+    ```bash
+    php artisan db:seed --class=BuildingSeeder
+    ```
+
+    ```bash
+    php artisan db:seed --class=RoomSeeder
     ```
 
 8. **Create Storage Symbolic Link**: Create a symbolic link from `public/storage` to `storage/app/public` for photos:
