@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\BuildingController;
 use App\Http\Controllers\RoomController;
+use App\Http\Controllers\FaceRegistrationController;
 
 // Login route (no middleware, anyone can hit this)
 Route::post('/login', [AuthController::class, 'login']);
@@ -27,6 +28,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', UserController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('buildings', BuildingController::class);
     Route::apiResource('rooms', RoomController::class);
+
+    // Face Recognition
+    Route::post('/face-register', [FaceRegistrationController::class, 'store']);
+    Route::get('/face-register', [FaceRegistrationController::class, 'index']);
+    Route::get('/face-register/{id}', [FaceRegistrationController::class, 'show']);
 
     // Feedback routes
     Route::apiResource('feedback', FeedbackController::class);
